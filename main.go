@@ -10,6 +10,8 @@ import (
 func main() {
 	fmt.Println("making get req..")
 	PerformGet()
+	fmt.Println("making post req..")
+	PerformPost()
 }
 
 func PerformGet() {
@@ -31,5 +33,27 @@ func PerformGet() {
 	resBuilder.Write(content)
 
 	fmt.Println(resBuilder.String())
+
+}
+
+func PerformPost() { // json data
+	const myurl = "http://localhost:8000/post"
+	requestBody := strings.NewReader(`{
+		"coursename" : "GO with go",
+		"duration" : "10 days"
+		}	
+	`)
+
+	response, err := http.Post(myurl, "application/json", requestBody)
+
+	if err != nil {
+		panic(err)
+	}
+	defer response.Body.Close()
+	var responseBuilder strings.Builder
+	content, _ := io.ReadAll(response.Body)
+	responseBuilder.Write(content)
+
+	fmt.Println(responseBuilder.String())
 
 }
