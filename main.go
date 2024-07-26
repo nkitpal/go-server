@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -12,6 +13,8 @@ func main() {
 	PerformGet()
 	fmt.Println("making post req..")
 	PerformPost()
+	fmt.Println("making postform req..")
+	PerformPostForm()
 }
 
 func PerformGet() {
@@ -50,6 +53,30 @@ func PerformPost() { // json data
 		panic(err)
 	}
 	defer response.Body.Close()
+	var responseBuilder strings.Builder
+	content, _ := io.ReadAll(response.Body)
+	responseBuilder.Write(content)
+
+	fmt.Println(responseBuilder.String())
+
+}
+
+func PerformPostForm() { // json data
+	const myurl = "http://localhost:8000/postform"
+
+	data := url.Values{}
+
+	data.Add("firstname", "ankit")
+	data.Add("lastname", "pal")
+	data.Add("email", "ankit@go.com")
+
+	response, err := http.PostForm(myurl, data)
+
+	if err != nil {
+		panic(err)
+	}
+	defer response.Body.Close()
+
 	var responseBuilder strings.Builder
 	content, _ := io.ReadAll(response.Body)
 	responseBuilder.Write(content)
